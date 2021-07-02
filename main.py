@@ -2,6 +2,8 @@ import alt
 
 alt.log("Hello World!")
 
+def maxVehicle(vehicle):
+    modTypes = 48
 
 def playerConnect(player):
     player.model = "mp_m_freemode_01"
