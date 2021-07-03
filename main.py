@@ -1,27 +1,12 @@
 import alt
+import veh_utils
+import sys
 
 alt.log("Hello World!")
 
 DEFAULT_VEH_NAME = "krieger"
 
-def maxVehicle(vehicle):
-    if vehicle.modKit == 0 and vehicle.modKitsCount > 0:
-        vehicle.modKit = 1
-    elif vehicle.modKit == 0 and vehicle.modKitsCount == 0:
-        alt.logError("Vehicle {0} has no modkit".format(vehicle.id))
-        return
-    elif vehicle.modKit == 1:
-        alt.log("Vehicle {0} already maxed".format(vehicle.id))
-        
-    modTypes = 48
-
-    for modType in range(modTypes):
-        modMax = vehicle.getModsCount(modType)
-        if modMax > 0:
-            vehicle.setMod(modType, modMax)
-
-    alt.log("Vehicle {0} maxed".format(vehicle.id))
-
+alt.log(sys.path)
 
 def playerConnect(player):
     player.model = "mp_m_freemode_01"
@@ -31,17 +16,24 @@ def playerConnect(player):
     alt.log("Created vehicle")
     alt.log("Vehicle ID: {}".format(veh.id))
 
+    player.giveWeapon("weapon_rpg", 999, True)
+
 def playerEnterVehicle(player, vehicle, seat):
     alt.log("Player {0} entered vehicle {1}".format(player.name, vehicle.id))
     vehicle.customPrimaryColor = alt.RGBA(243, 255, 0, 255)
-    maxVehicle(vehicle)
+    veh_utils.maxVehicle(vehicle)
     vehicle.numberPlateText = player.name
+    alt.log("Vehicle driver: {}".format(vehicle.driver.name))
 
 def playerLeaveVehicle(player, vehicle, seat):
     alt.log("Player {0} left vehicle {1}".format(player.name, vehicle.id))
     vehicle.customPrimaryColor = alt.RGBA(0, 0, 0, 255)
     vehicle.numberPlateText = vehicle.getMeta("name")
 
+def explosion(source, expType, pos, fx, target):
+    alt.log("Explosion of type {0} caused by player {1} at position {2}".format(expType, source, pos))
+
 alt.on("playerConnect", playerConnect)
 alt.on("playerEnterVehicle", playerEnterVehicle)
 alt.on("playerLeaveVehicle", playerLeaveVehicle)
+alt.on("explosion", explosion)
